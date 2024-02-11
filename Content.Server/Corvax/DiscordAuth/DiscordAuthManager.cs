@@ -1,4 +1,4 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading;
@@ -47,7 +47,7 @@ public sealed class DiscordAuthManager
         _netMgr.RegisterNetMessage<MsgDiscordAuthRequired>();
         _netMgr.RegisterNetMessage<MsgDiscordAuthCheck>(OnAuthCheck);
 
-        _playerMgr.PlayerStatusChanged += OnPlayerStatusChanged;
+        // _playerMgr.PlayerStatusChanged += OnPlayerStatusChanged;
     }
 
     private async void OnAuthCheck(MsgDiscordAuthCheck message)

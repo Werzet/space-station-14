@@ -7,6 +7,7 @@ using System.Net.Http.Json;
 using System.Security.Cryptography;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using System.Threading;
 using System.Threading.Tasks;
 using Content.Server.Database;
 using Content.Shared.Corvax.CCCVars;
@@ -32,6 +33,10 @@ public sealed class DiscordPlayerManager : IPostInjectInit
     private readonly HttpClient _httpClient = new();
 
     private string _apiUrl = string.Empty;
+    private bool _isDiscordAuthEnabled = false;
+    private string _apiKey = string.Empty;
+
+    public event EventHandler<ICommonSession>? PlayerVerified;
 
     public void Initialize()
     {
@@ -39,11 +44,15 @@ public sealed class DiscordPlayerManager : IPostInjectInit
 
         _netMgr.RegisterNetMessage<MsgUpdatePlayerDiscordStatus>();
 
+        _netMgr.RegisterNetMessage<MsgDiscordLinkRequired>();
+        _netMgr.RegisterNetMessage<MsgRecheckDiscordLink>(CheckDiscordLinked);
+
         _cfg.OnValueChanged(CCCVars.DiscordAuthApiUrl, v => _apiUrl = v, true);
-        _cfg.OnValueChanged(CCCVars.DiscordAuthApiKey, v =>
-        {
-            _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", v);
-        },
+        _cfg.OnValueChanged(CCCVars.DiscordAuthEnabled, v => _isDiscordAuthEnabled = v, true);
+        _cfg.OnValueChanged(CCCVars.DiscordAuthApiKey, v => _apiKey = v,
+        //{
+        //    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", v);
+        //},
         true);
     }
 
@@ -52,8 +61,43 @@ public sealed class DiscordPlayerManager : IPostInjectInit
         _playerManager.PlayerStatusChanged += PlayerManager_PlayerStatusChanged;
     }
 
+    private async void CheckDiscordLinked(MsgRecheckDiscordLink msg)
+    {
+        var isLinked = await CheckUserLink(msg.MsgChannel.UserId);
+
+        if (isLinked)
+        {
+            var session = _playerManager.GetSessionById(msg.MsgChannel.UserId);
+
+            PlayerVerified?.Invoke(this, session);
+        }
+    }
+
     private async void PlayerManager_PlayerStatusChanged(object? sender, SessionStatusEventArgs e)
     {
+        if (e.NewStatus == SessionStatus.Connected)
+        {
+            if (!_isDiscordAuthEnabled)
+            {
+                PlayerVerified?.Invoke(this, e.Session);
+                return;
+            }
+
+            var isLinked = await CheckUserLink(e.Session.UserId);
+
+            if (isLinked)
+            {
+                PlayerVerified?.Invoke(this, e.Session);
+                return;
+            }
+
+            var url = await GetUserLink(e.Session.UserId);
+
+            var msg = new MsgDiscordLinkRequired() { AuthUrl = url };
+
+            e.Session.Channel.SendMessage(msg);
+        }
+
         if (e.NewStatus == SessionStatus.InGame)
         {
             await UpdateUserDiscordRolesStatus(e);
@@ -114,6 +158,46 @@ public sealed class DiscordPlayerManager : IPostInjectInit
 
         return null;
     }
+
+    public async Task<string> GetUserLink(NetUserId userId)
+    {
+        _sawmill.Debug($"Player {userId} get Discord link");
+
+        var requestUrl = $"{_apiUrl}/linkAccount/getLink/{WebUtility.UrlEncode(userId.ToString())}?key={_apiKey}";
+        var response = await _httpClient.GetAsync(requestUrl, CancellationToken.None);
+        if (!response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync();
+
+            throw new Exception($"Failed to get user discord link. API returned bad status code: {response.StatusCode}\nResponse: {content}");
+        }
+
+        var data = await response.Content.ReadFromJsonAsync<AccountLinkResponseParameters>();
+        return data!.AccountLinkUrl;
+    }
+
+    public async Task<bool> CheckUserLink(NetUserId userId)
+    {
+        _sawmill.Debug($"Player {userId} check Discord link");
+
+        var requestUrl = $"{_apiUrl}/linkAccount/checkLink/{WebUtility.UrlEncode(userId.ToString())}?key={_apiKey}";
+
+        var response = await _httpClient.GetAsync(requestUrl, CancellationToken.None);
+
+        if (!response.IsSuccessStatusCode)
+        {
+            var content = await response.Content.ReadAsStringAsync();
+
+            throw new Exception($"Failed to check user discord link. API returned bad status code: {response.StatusCode}\nResponse: {content}");
+        }
+
+        var data = await response.Content.ReadFromJsonAsync<DiscordAuthInfoResponse>();
+        return data!.AccountLinked;
+    }
+
+    private sealed record AccountLinkResponseParameters(string AccountLinkUrl);
+
+    private sealed record DiscordAuthInfoResponse(bool AccountLinked);
 
     private static JsonSerializerOptions GetJsonSerializerOptions()
     {
