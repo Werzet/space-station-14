@@ -48,7 +48,6 @@ namespace Content.IntegrationTests.Tests
             "Fland",
             "Meta",
             "Packed",
-            "Aspid",
             "Cluster",
             "Omega",
             "Bagel",
@@ -59,7 +58,6 @@ namespace Content.IntegrationTests.Tests
             "Saltern",
             "Core",
             "Marathon",
-            "Gemini",
             "MeteorArena",
             "Atlas",
             "Reach",
@@ -76,7 +74,9 @@ namespace Content.IntegrationTests.Tests
             "220Avrite",
             "220Marathon",
             "220Hive",
-            "VoidZone"
+            "VoidZone",
+            "NTvsSSSP",
+            "Axioma"
         };
 
         /// <summary>
