@@ -161,38 +161,57 @@ public sealed class DiscordPlayerManager : IPostInjectInit
 
     public async Task<string> GetUserLink(NetUserId userId)
     {
-        _sawmill.Debug($"Player {userId} get Discord link");
-
-        var requestUrl = $"{_apiUrl}/linkAccount/getLink/{WebUtility.UrlEncode(userId.ToString())}?key={_apiKey}";
-        var response = await _httpClient.GetAsync(requestUrl, CancellationToken.None);
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            var content = await response.Content.ReadAsStringAsync();
+            _sawmill.Debug($"Player {userId} get Discord link");
 
-            throw new Exception($"Failed to get user discord link. API returned bad status code: {response.StatusCode}\nResponse: {content}");
+            var requestUrl = $"{_apiUrl}/linkAccount/link/{WebUtility.UrlEncode(userId.ToString())}?apiKey={_apiKey}";
+            var response = await _httpClient.PostAsync(requestUrl, content: null, CancellationToken.None);
+            if (!response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+
+                throw new Exception($"Failed to get user discord link. API returned bad status code: {response.StatusCode}\nResponse: {content}");
+            }
+
+            var data = await response.Content.ReadFromJsonAsync<AccountLinkResponseParameters>();
+            return data!.AccountLinkUrl;
+        }
+        catch (Exception exc)
+        {
+            _sawmill.Error($"Exception on user link get. {exc}");
         }
 
-        var data = await response.Content.ReadFromJsonAsync<AccountLinkResponseParameters>();
-        return data!.AccountLinkUrl;
+        return string.Empty;
     }
 
     public async Task<bool> CheckUserLink(NetUserId userId)
     {
-        _sawmill.Debug($"Player {userId} check Discord link");
-
-        var requestUrl = $"{_apiUrl}/linkAccount/checkLink/{WebUtility.UrlEncode(userId.ToString())}?key={_apiKey}";
-
-        var response = await _httpClient.GetAsync(requestUrl, CancellationToken.None);
-
-        if (!response.IsSuccessStatusCode)
+        try
         {
-            var content = await response.Content.ReadAsStringAsync();
+            _sawmill.Debug($"Player {userId} check Discord link");
 
-            throw new Exception($"Failed to check user discord link. API returned bad status code: {response.StatusCode}\nResponse: {content}");
+            var requestUrl = $"{_apiUrl}/linkAccount/link/{WebUtility.UrlEncode(userId.ToString())}?apiKey={_apiKey}";
+
+            var response = await _httpClient.GetAsync(requestUrl, CancellationToken.None);
+
+            if (!response.IsSuccessStatusCode)
+            {
+                var content = await response.Content.ReadAsStringAsync();
+
+                throw new Exception($"Failed to check user discord link. API returned bad status code: {response.StatusCode}\nResponse: {content}");
+            }
+
+            var data = await response.Content.ReadFromJsonAsync<DiscordAuthInfoResponse>();
+
+            return data!.AccountLinked;
+        }
+        catch (Exception exc)
+        {
+            _sawmill.Error($"Exception on check user link. {exc}");
         }
 
-        var data = await response.Content.ReadFromJsonAsync<DiscordAuthInfoResponse>();
-        return data!.AccountLinked;
+        return false;
     }
 
     private sealed record AccountLinkResponseParameters(string AccountLinkUrl);
