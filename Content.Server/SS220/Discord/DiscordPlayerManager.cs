@@ -165,7 +165,7 @@ public sealed class DiscordPlayerManager : IPostInjectInit
         {
             _sawmill.Debug($"Player {userId} get Discord link");
 
-            var requestUrl = $"{_apiUrl}/linkAccount/link/{WebUtility.UrlEncode(userId.ToString())}?apiKey={_apiKey}";
+            var requestUrl = $"{_apiUrl}/api/linkAccount/link14/{WebUtility.UrlEncode(userId.ToString())}?apiKey={_apiKey}";
             var response = await _httpClient.PostAsync(requestUrl, content: null, CancellationToken.None);
             if (!response.IsSuccessStatusCode)
             {
@@ -191,7 +191,7 @@ public sealed class DiscordPlayerManager : IPostInjectInit
         {
             _sawmill.Debug($"Player {userId} check Discord link");
 
-            var requestUrl = $"{_apiUrl}/linkAccount/link/{WebUtility.UrlEncode(userId.ToString())}?apiKey={_apiKey}";
+            var requestUrl = $"{_apiUrl}/api/linkAccount/checkLink14/{WebUtility.UrlEncode(userId.ToString())}?apiKey={_apiKey}";
 
             var response = await _httpClient.GetAsync(requestUrl, CancellationToken.None);
 
