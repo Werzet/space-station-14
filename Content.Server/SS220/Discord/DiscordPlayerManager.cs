@@ -180,7 +180,7 @@ public sealed class DiscordPlayerManager : IPostInjectInit
         return Convert.ToBase64String(RandomNumberGenerator.GetBytes(count));
     }
 
-    public async Task<PrimeListUserStatus?> GetUserPrimeListStatus(Guid userId, string userName)
+    public async Task<PrimeListUserStatus?> GetUserPrimeListStatus(Guid userId)
     {
         if (string.IsNullOrEmpty(_apiUrl))
         {
@@ -189,7 +189,7 @@ public sealed class DiscordPlayerManager : IPostInjectInit
 
         try
         {
-            var url = $"{_apiUrl}/checkPrimeAccess/{userId}/{userName}";
+            var url = $"{_apiUrl}/checkPrimeAccess/{userId}";
 
             var response = await _httpClient.GetAsync(url);
 

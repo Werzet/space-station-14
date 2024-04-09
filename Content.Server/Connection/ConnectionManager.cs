@@ -5,7 +5,6 @@ using Content.Server.Database;
 using Content.Server.GameTicking;
 using Content.Server.Preferences.Managers;
 using Content.Server.SS220.Discord;
-using Content.Server.SS220.PrimeWhitelist;
 using Content.Shared.CCVar;
 using Content.Shared.Corvax.CCCVars;
 using Content.Shared.GameTicking;
@@ -35,7 +34,6 @@ namespace Content.Server.Connection
         [Dependency] private readonly IConfigurationManager _cfg = default!;
         [Dependency] private readonly SponsorsManager _sponsorsManager = default!; // Corvax-Sponsors
         [Dependency] private readonly ILocalizationManager _loc = default!;
-        [Dependency] private readonly Primelist _primelist = default!;
         [Dependency] private readonly ServerDbEntryManager _serverDbEntry = default!;
         [Dependency] private readonly DiscordPlayerManager _discordPlayerManager = default!;
 
@@ -190,7 +188,7 @@ namespace Content.Server.Connection
             // SS220 prime list restriction start
             if (_cfg.GetCVar(CCVars.PrimelistEnabled))
             {
-                var primeAccessStatus = await _discordPlayerManager.GetUserPrimeListStatus(userId, e.UserName);
+                var primeAccessStatus = await _discordPlayerManager.GetUserPrimeListStatus(userId);
 
                 if (primeAccessStatus is null)
                 {
@@ -199,7 +197,7 @@ namespace Content.Server.Connection
 
                 if (!string.IsNullOrWhiteSpace(primeAccessStatus.PrimeAccessNotAvailableReason))
                 {
-                    return (ConnectionDenyReason.Whitelist, primeAccessStatus.PrimeAccessNotAvailableReason, null); 
+                    return (ConnectionDenyReason.Whitelist, primeAccessStatus.PrimeAccessNotAvailableReason, null);
                 }
             }
             // SS220 prime list restriction end
