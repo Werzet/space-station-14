@@ -18,6 +18,7 @@ public sealed class AntagStatusIconSystem : SharedStatusIconSystem
     [Dependency] private readonly IPrototypeManager _prototype = default!;
     [Dependency] private readonly IPlayerManager _player = default!;
     public override void Initialize()
+    
     {
         base.Initialize();
 
