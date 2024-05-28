@@ -34,6 +34,7 @@ namespace Content.Client.Decals
             if (_overlayManager.HasOverlay<DecalOverlay>())
             {
                 _overlayManager.RemoveOverlay(_overlay);
+                
             }
             else
             {
