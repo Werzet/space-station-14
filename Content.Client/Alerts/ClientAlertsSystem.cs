@@ -17,6 +17,7 @@ public sealed class ClientAlertsSystem : AlertsSystem
 
     public event EventHandler? ClearAlerts;
     public event EventHandler<IReadOnlyDictionary<AlertKey, AlertState>>? SyncAlerts;
+    
 
     public override void Initialize()
     {
