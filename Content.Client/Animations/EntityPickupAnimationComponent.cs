@@ -8,4 +8,5 @@
 [Access(typeof(EntityPickupAnimationSystem))]
 public sealed partial class EntityPickupAnimationComponent : Component
 {
+
 }
