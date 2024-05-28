@@ -15,6 +15,7 @@ namespace Content.Client.Administration
         private readonly IEntityManager _entityManager;
         private readonly IEyeManager _eyeManager;
         private readonly EntityLookupSystem _entityLookup;
+        
         private readonly Font _font;
 
         public AdminNameOverlay(AdminSystem system, IEntityManager entityManager, IEyeManager eyeManager, IResourceCache resourceCache, EntityLookupSystem entityLookup)
