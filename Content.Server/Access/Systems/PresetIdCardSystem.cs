@@ -34,8 +34,8 @@ public sealed class PresetIdCardSystem : EntitySystem
             var station = _stationSystem.GetOwningStation(uid);
 
             // If we're not on an extended access station, the ID is already configured correctly from MapInit.
-            if (station == null || !Comp<StationJobsComponent>(station.Value).ExtendedAccess)
-                return;
+            if (station == null || !TryComp<StationJobsComponent>(station.Value, out var jobsComp) || !jobsComp.ExtendedAccess)
+                continue;
 
             SetupIdAccess(uid, card, true);
             SetupIdName(uid, card);
@@ -51,8 +51,10 @@ public sealed class PresetIdCardSystem : EntitySystem
 
         var station = _stationSystem.GetOwningStation(uid);
         var extended = false;
-        if (station != null)
-            extended = Comp<StationJobsComponent>(station.Value).ExtendedAccess;
+
+        // Station not guaranteed to have jobs (e.g. nukie outpost).
+        if (TryComp(station, out StationJobsComponent? stationJobs))
+            extended = stationJobs.ExtendedAccess;
 
         SetupIdAccess(uid, id, extended);
         SetupIdName(uid, id);

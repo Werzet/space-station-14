@@ -20,13 +20,15 @@
         # axes are kinda like sharp hammers, you know?
         Blunt: 5
         Slash: 10
-        Structural: 10
+        Structural: 35 #ss220
+    soundHit:
+      collection: MetalThud
   - type: Wieldable
   - type: IncreaseDamageOnWield
     damage:
       types:
         Slash: 10
-        Structural: 40
+        Structural: 135 #ss220
   - type: Item
     size: Ginormous
   - type: Clothing
@@ -65,3 +67,18 @@
     quickEquip: false
     slots:
     - back
+# Corvax-HiddenDesc-Start
+  - type: HiddenDescription
+    entries:
+    - label: corvax-hidden-desc-FireAxeFlaming-syndicate
+      whitelistMind:
+        components:
+          - TraitorRole
+          - NukeOperative
+    - label: corvax-hidden-desc-FireAxeFlaming-research
+      jobRequired:
+        - ResearchAssistant
+        - ResearchDirector
+        - Scientist
+        - Borg
+# Corvax-HiddenDesc-End

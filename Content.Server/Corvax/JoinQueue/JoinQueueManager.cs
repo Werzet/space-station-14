@@ -153,7 +153,7 @@ public sealed class JoinQueueManager
     {
         for (var i = 0; i < _queue.Count; i++)
         {
-            _queue[i].ConnectedClient.SendMessage(new MsgQueueUpdate
+            _queue[i].Channel.SendMessage(new MsgQueueUpdate
             {
                 Total = _queue.Count,
                 Position = i + 1,

@@ -48,6 +48,9 @@ public enum CollisionGroup
     MachineLayer = Opaque | MidImpassable | LowImpassable | BulletImpassable,
     ConveyorMask = Impassable | MidImpassable | LowImpassable | DoorPassable,
 
+    // Crates
+    CrateMask = Impassable | HighImpassable | LowImpassable,
+
     // Tables that SmallMobs can go under
     TableMask = Impassable | MidImpassable,
     TableLayer = MidImpassable,
@@ -77,5 +80,9 @@ public enum CollisionGroup
     // FlyingMob can go past
     FullTileLayer = Opaque | HighImpassable | MidImpassable | LowImpassable | BulletImpassable | InteractImpassable,
 
-    SubfloorMask = Impassable | LowImpassable
+    SubfloorMask = Impassable | LowImpassable,
+
+    // SS220 Structure collsion fix begin
+    StructureLayer = HighImpassable | Impassable | MidImpassable
+    // SS220 Structure collsion fix end
 }

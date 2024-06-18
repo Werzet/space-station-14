@@ -230,11 +230,11 @@ namespace Content.Server.Database
                 unban.UnbanTime);
         }
 
-        public override async Task AddServerBanAsync(ServerBanDef serverBan)
+        public override async Task<int> AddServerBanAsync(ServerBanDef serverBan)
         {
             await using var db = await GetDbImpl();
 
-            db.PgDbContext.Ban.Add(new ServerBan
+            var ban = db.PgDbContext.Ban.Add(new ServerBan
             {
                 Address = serverBan.Address.ToNpgsqlInet(),
                 HWId = serverBan.HWId?.ToArray(),
@@ -251,6 +251,8 @@ namespace Content.Server.Database
             });
 
             await db.PgDbContext.SaveChangesAsync();
+
+            return ban.Entity.Id;
         }
 
         public override async Task AddServerUnbanAsync(ServerUnbanDef serverUnban)
@@ -531,22 +533,26 @@ WHERE to_tsvector('english'::regconfig, a.message) @@ websearch_to_tsquery('engl
             return time;
         }
 
-        private async Task<DbGuardImpl> GetDbImpl([CallerMemberName] string? name = null)
+        private async Task<DbGuardImpl> GetDbImpl(
+            CancellationToken cancel = default,
+            [CallerMemberName] string? name = null)
         {
             LogDbOp(name);
 
             await _dbReadyTask;
-            await _prefsSemaphore.WaitAsync();
+            await _prefsSemaphore.WaitAsync(cancel);
 
             if (_msLag > 0)
-                await Task.Delay(_msLag);
+                await Task.Delay(_msLag, cancel);
 
             return new DbGuardImpl(this, new PostgresServerDbContext(_options));
         }
 
-        protected override async Task<DbGuard> GetDb([CallerMemberName] string? name = null)
+        protected override async Task<DbGuard> GetDb(
+            CancellationToken cancel = default,
+            [CallerMemberName] string? name = null)
         {
-            return await GetDbImpl(name);
+            return await GetDbImpl(cancel, name);
         }
 
         private sealed class DbGuardImpl : DbGuard

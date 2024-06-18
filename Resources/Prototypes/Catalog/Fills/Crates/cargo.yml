@@ -110,9 +110,6 @@
     - id: WeaponRifleAk
       prob: 0.0001
       orGroup: Weapons
-    - id: Throngler
-      prob: 0.0001
-      orGroup: Weapons
     - id: WeaponLauncherPirateCannon
       prob: 0.001
       orGroup: Weapons
@@ -228,6 +225,10 @@
     - id: ClothingUniformJumpskirtOfLife
       prob: 0.01
       orGroup: Clothes
+    #SS220-DevilHorns-Begin
+    - id: ClothingHeadHatDevilHorns
+      prob: 0.01
+    #SS220-DevilHorns-End
     #swag
     - id: ClothingNeckBling
       prob: 0.01

@@ -1,5 +1,6 @@
 - type: entity
   name: handheld crew monitor
+  suffix: DO NOT MAP
   parent:
   - BaseItem
   - PowerCellSlotSmallItem
@@ -16,10 +17,9 @@
   - type: ActivatableUIRequiresPowerCell
   - type: ActivatableUI
     key: enum.CrewMonitoringUIKey.Key
-    closeOnHandDeselect: false
   - type: UserInterface
     interfaces:
-      - key: enum.CrewMonitoringUIKey.Key
+      enum.CrewMonitoringUIKey.Key:
         type: CrewMonitoringBoundUserInterface
   - type: CrewMonitoringConsole
   - type: DeviceNetwork
@@ -30,6 +30,11 @@
   - type: StationLimitedNetwork
   - type: StaticPrice
     price: 500
+  - type: Tag
+    tags:
+    - HighRiskItem
+  - type: StealTarget
+    stealGroup: HandheldCrewMonitor
 
 - type: entity
   id: HandheldCrewMonitorEmpty

@@ -3,14 +3,17 @@
 - type: gameMap
   id: Axioma
   mapName: 'NSS Axioma'
-  mapPath: /Maps/axioma.yml
+  mapPath: /Maps/SS220/axioma.yml
   minPlayers: 0
   stations:
     Axioma:
       stationProto: AxiomaNanotrasenStation
       components:
         - type: StationEmergencyShuttle
-          emergencyShuttlePath: /Maps/Shuttles/emergency_axioma.yml
+          emergencyShuttlePath: /Maps/SS220/Shuttles/emergency/emergency_axioma.yml
+        - type: StationRandomTransform
+          enableStationRotation: false
+          maxStationOffset: null
         - type: StationNameSetup
           mapNameTemplate: '{0} Axioma {1}'
           nameGenerator:
@@ -30,6 +33,7 @@
             HeadOfSecurity: [ 1, 1 ]
             Warden: [ 1, 1 ]
             Detective: [ 1, 1 ]
+            SecurityPilot: [ 2, 2 ]
             SecurityOfficer: [ 6, 6 ]
             SecurityCadet: [ 3, 3 ]
             Brigmedic: [ 1, 1 ]

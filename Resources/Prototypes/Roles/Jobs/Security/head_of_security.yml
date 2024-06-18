@@ -13,7 +13,6 @@
   requireAdminNotify: true
   supervisors: job-supervisors-captain
   canBeAntag: false
-  canBeZombie: false
   radioBold: true
   access:
   - HeadOfSecurity
@@ -25,6 +24,7 @@
   - Service
   - External
   - Detective
+  - Cryogenics
   special:
   - !type:AddImplantSpecial
     implants: [ MindShieldImplant ]
@@ -35,18 +35,10 @@
 - type: startingGear
   id: HoSGear
   equipment:
-    jumpsuit: ClothingUniformJumpsuitHoS
-    back: ClothingBackpackHOSFilled
-    shoes: ClothingShoesBootsCombatFilled
-    outerClothing: ClothingOuterCoatHoSTrench
-    eyes: ClothingEyesGlassesSecurity #ss-220-GlassesSecurity
-    head: ClothingHeadBigCapHoS # SS220 NewHatForHoS
+    eyes: ClothingEyesGlassesSecurity
     id: HoSPDA
     gloves: ClothingHandsGlovesCombat
     ears: ClothingHeadsetAltSecurity
-    belt: ClothingBeltSecurityFilled
+#    belt: ClothingBeltSecurityFilled #SS220-FreedomHoSCap
     pocket1: WeaponPistolMk58
     pocket2: MagazinePistol
-  innerClothingSkirt: ClothingUniformJumpskirtHoS
-  satchel: ClothingBackpackSatchelHOSFilled
-  duffelbag: ClothingBackpackDuffelHOSFilled

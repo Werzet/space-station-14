@@ -1,7 +1,9 @@
 using System.Linq;
 using Content.Server.Administration;
+using Content.Server.Administration.Managers;
 using Content.Server.Chat.Managers;
 using Content.Server.GameTicking;
+using Content.Server.Ghost.Roles.Components;
 using Content.Server.Radio.Components;
 using Content.Server.Roles;
 using Content.Server.Station.Systems;
@@ -19,7 +21,6 @@ using Content.Shared.Silicons.Laws.Components;
 using Content.Shared.Stunnable;
 using Content.Shared.Wires;
 using Robust.Server.GameObjects;
-using Robust.Shared.Audio.Systems;
 using Robust.Shared.Player;
 using Robust.Shared.Prototypes;
 using Robust.Shared.Toolshed;
@@ -38,7 +39,7 @@ public sealed class SiliconLawSystem : SharedSiliconLawSystem
     [Dependency] private readonly SharedStunSystem _stunSystem = default!;
     [Dependency] private readonly IEntityManager _entityManager = default!;
     [Dependency] private readonly SharedRoleSystem _roles = default!;
-    [Dependency] private readonly SharedAudioSystem _audioSystem = default!;
+    [Dependency] private readonly IBanManager _banManager = default!; // SS220 Antag ban fix
 
     /// <inheritdoc/>
     public override void Initialize()
@@ -57,7 +58,6 @@ public sealed class SiliconLawSystem : SharedSiliconLawSystem
         SubscribeLocalEvent<SiliconLawProviderComponent, GotEmaggedEvent>(OnEmagLawsAdded);
         SubscribeLocalEvent<EmagSiliconLawComponent, MindAddedMessage>(OnEmagMindAdded);
         SubscribeLocalEvent<EmagSiliconLawComponent, MindRemovedMessage>(OnEmagMindRemoved);
-        SubscribeLocalEvent<EmagSiliconLawComponent, ExaminedEvent>(OnExamined);
     }
 
     private void OnComponentShutdown(EntityUid uid, SiliconLawBoundComponent component, ComponentShutdown args)
@@ -95,10 +95,10 @@ public sealed class SiliconLawSystem : SharedSiliconLawSystem
     private void OnBoundUIOpened(EntityUid uid, SiliconLawBoundComponent component, BoundUIOpenedEvent args)
     {
         _entityManager.TryGetComponent<IntrinsicRadioTransmitterComponent>(uid, out var intrinsicRadio);
-        HashSet<string>? radioChannels = intrinsicRadio?.Channels;
+        var radioChannels = intrinsicRadio?.Channels;
 
         var state = new SiliconLawBuiState(GetLaws(uid).Laws, radioChannels);
-        _userInterface.TrySetUiState(args.Entity, SiliconLawsUiKey.Key, state, args.Session);
+        _userInterface.SetUiState(args.Entity, SiliconLawsUiKey.Key, state);
     }
 
     private void OnPlayerSpawnComplete(EntityUid uid, SiliconLawBoundComponent component, PlayerSpawnCompleteEvent args)
@@ -157,17 +157,6 @@ public sealed class SiliconLawSystem : SharedSiliconLawSystem
         });
     }
 
-    private void OnExamined(EntityUid uid, EmagSiliconLawComponent component, ExaminedEvent args)
-    {
-        if (!args.IsInDetailsRange || !HasComp<EmaggedComponent>(uid))
-            return;
-
-        if (component.RequireOpenPanel && TryComp<WiresPanelComponent>(uid, out var panel) && !panel.Open)
-            return;
-
-        args.PushMarkup(Loc.GetString("laws-compromised-examine"));
-    }
-
     protected override void OnGotEmagged(EntityUid uid, EmagSiliconLawComponent component, ref GotEmaggedEvent args)
     {
         if (component.RequireOpenPanel && TryComp<WiresPanelComponent>(uid, out var panel) && !panel.Open)
@@ -200,13 +189,30 @@ public sealed class SiliconLawSystem : SharedSiliconLawSystem
 
     private void EnsureEmaggedRole(EntityUid uid, EmagSiliconLawComponent component)
     {
-        if (component.AntagonistRole == null || !_mind.TryGetMind(uid, out var mindId, out _))
+        if (component.AntagonistRole == null || !_mind.TryGetMind(uid, out var mindId, out var mind))
             return;
 
         if (_roles.MindHasRole<SubvertedSiliconRoleComponent>(mindId))
             return;
 
-        _roles.MindAddRole(mindId, new SubvertedSiliconRoleComponent { PrototypeId = component.AntagonistRole });
+        // SS220 antag ban
+        if (_mind.TryGetSession(mindId, out var session) && _banManager.GetJobBans(session.UserId) is { } roleBans && roleBans.Contains("SubvertedSilicon"))
+        {
+            // If user has role ban - kick him out of emagged borg.
+            _mind.TransferTo(mindId, null, mind: mind);
+
+            var ghostRole = EnsureComp<GhostRoleComponent>(uid);
+            EnsureComp<GhostTakeoverAvailableComponent>(uid);
+            ghostRole.RoleName = Loc.GetString("roles-antag-subverted-silicon-name");
+            ghostRole.RoleDescription = Loc.GetString("roles-antag-subverted-silicon-name");
+            ghostRole.RoleRules = Loc.GetString("roles-antag-subverted-silicon-objective");
+
+            EnsureComp<SubvertedSiliconRoleComponent>(uid).PrototypeId = component.AntagonistRole;
+        }
+        else
+        {
+            _roles.MindAddRole(mindId, new SubvertedSiliconRoleComponent { PrototypeId = component.AntagonistRole });
+        }
     }
 
     public SiliconLawset GetLaws(EntityUid uid, SiliconLawBoundComponent? component = null)

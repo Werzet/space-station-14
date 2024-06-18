@@ -6,7 +6,7 @@
   - type: StorageFill
     contents:
       - id: ClothingHeadHatCaptain
-      - id: ClothingHeadHatCapcap
+      - id: ClothingHeadBeretCap #SS220 CapBeret
       - id: ClothingNeckCloakCap
       - id: ClothingNeckCloakCapFormal
       - id: ClothingUniformJumpsuitCapFormal
@@ -15,6 +15,7 @@
       # Corvax-Resprite-Start
       - id: ClothingHeadCaptainHat
       - id: ClothingOuterCoatCaptain
+      - id: ClothingHeadCaptainCap #SS220 Captain's Cap tweak
       # Corvax-Resprite-End
       - id: ClothingNeckMantleCap
       - id: ClothingOuterWinterCap
@@ -32,6 +33,8 @@
       - id: ClothingNeckCloakCe
       - id: ClothingHeadHatBeretEngineering
       - id: ClothingOuterWinterCE
+      - id: ClothingOuterCoatCEFormalDress #SS220-FormalDress
+      - id: ClothingHeadHatBeretCE #SS220-CEBeret
 
 - type: entity
   id: DresserChiefMedicalOfficerFilled
@@ -43,9 +46,13 @@
       - id: ClothingNeckMantleCMO
       - id: ClothingCloakCmo
       - id: ClothingOuterCoatLabCmo
+      - id: ClothingUniformJumpsuitCMOTurtle
+      - id: ClothingUniformJumpskirtCMOTurtle
       - id: ClothingHeadHatBeretCmo
+      - id: ClothingHeadMirror
       - id: ClothingEyesGlasses
       - id: ClothingOuterWinterCMO
+      - id: ClothingOuterCoatCMOFormalDress #SS220-FormalDress
 
 - type: entity
   id: DresserHeadOfPersonnelFilled
@@ -59,6 +66,7 @@
       - id: ClothingHeadHatHopcap
       - id: ClothingOuterWinterHoP
       - id: ClothingEyesGlasses
+      - id: ClothingOuterCoatHoPFormalDress #SS220-FormalDress
 
 - type: entity
   id: DresserHeadOfSecurityFilled
@@ -78,8 +86,8 @@
       - id: ClothingHeadHatCapHoS # Corvax-SecFashion
       - id: ClothingOuterCoatHoSGreatcoat # Corvax-Resprite
       - id: ClothingMaskNeckGaiter
-      - id: ClothingHeadHatBeretHoS # SS220 NewHatForHoS
       - id: ClothingOuterWinterHoS
+      - id: ClothingHeadBigCapHoS # SS220-FreedomHoSCap
 
 - type: entity
   id: DresserQuarterMasterFilled
@@ -90,12 +98,13 @@
     contents:
       - id: ClothingNeckCloakQm
       - id: ClothingHeadHatBeretQM
-      - id: ClothingUniformJumpsuitQMFormal
+#      - id: ClothingUniformJumpsuitQMFormal #SS220-Fashion
       - id: ClothingUniformJumpsuitQMTurtleneck
       - id: ClothingUniformJumpskirtQMTurtleneck
       - id: ClothingHandsGlovesColorBrown
       - id: ClothingNeckMantleQM
       - id: ClothingOuterWinterQM
+      - id: ClothingOuterCoatQM #SS220-Fashion
 
 - type: entity
   id: DresserResearchDirectorFilled
@@ -110,6 +119,7 @@
       - id: ClothingHandsGlovesColorPurple
       - id: ClothingEyesGlasses
       - id: ClothingOuterWinterRD
+      - id: ClothingOuterCoatRDFormalDress #SS220-FormalDress
 
 - type: entity
   id: DresserWardenFilled
