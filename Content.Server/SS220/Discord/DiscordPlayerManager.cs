@@ -51,6 +51,7 @@ public sealed class DiscordPlayerManager : IPostInjectInit, IDisposable
 
         _netMgr.RegisterNetMessage<MsgDiscordLinkRequired>();
         _netMgr.RegisterNetMessage<MsgRecheckDiscordLink>(CheckDiscordLinked);
+        _netMgr.RegisterNetMessage<MsgByPassDiscordCheck>(ByPassDiscordCheck);
 
         _cfg.OnValueChanged(CCCVars.DiscordAuthApiUrl, v => _apiUrl = v, true);
         _cfg.OnValueChanged(CCCVars.DiscordAuthEnabled, v => _isDiscordAuthEnabled = v, true);
@@ -68,6 +69,13 @@ public sealed class DiscordPlayerManager : IPostInjectInit, IDisposable
             dueTime: TimeSpan.FromSeconds(_cfg.GetCVar(CCVars220.DiscordSponsorsCacheLoadDelaySeconds)),
             period: TimeSpan.FromSeconds(_cfg.GetCVar(CCVars220.DiscordSponsorsCacheRefreshIntervalSeconds))
         );
+    }
+
+    private void ByPassDiscordCheck(MsgByPassDiscordCheck msg)
+    {
+        var session = _playerManager.GetSessionById(msg.MsgChannel.UserId);
+
+        PlayerVerified?.Invoke(this, session);
     }
 
     void IPostInjectInit.PostInject()

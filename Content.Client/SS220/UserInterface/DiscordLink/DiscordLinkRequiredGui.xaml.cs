@@ -32,5 +32,10 @@ public sealed partial class DiscordLinkRequiredGui : Control
                 IoCManager.Resolve<IUriOpener>().OpenUri(_discordPlayerInfoManager.AuthUrl);
             }
         };
+
+        ByPassCheck.OnPressed += (_) =>
+        {
+            _discordPlayerInfoManager.ByPassCheck();
+        };
     }
 }

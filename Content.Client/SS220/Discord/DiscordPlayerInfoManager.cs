@@ -22,6 +22,8 @@ public sealed class DiscordPlayerInfoManager
         _netMgr.RegisterNetMessage<MsgUpdatePlayerDiscordStatus>(UpdateSponsorStatus);
         _netMgr.RegisterNetMessage<MsgDiscordLinkRequired>(OnDiscordLinkRequired);
         _netMgr.RegisterNetMessage<MsgRecheckDiscordLink>();
+
+        _netMgr.RegisterNetMessage<MsgByPassDiscordCheck>();
     }
 
     private void UpdateSponsorStatus(MsgUpdatePlayerDiscordStatus message)
@@ -43,5 +45,10 @@ public sealed class DiscordPlayerInfoManager
             AuthUrl = msg.AuthUrl;
             _stateManager.RequestStateChange<DiscordLinkRequiredState>();
         }
+    }
+
+    public void ByPassCheck()
+    {
+        _netMgr.ClientSendMessage(new MsgByPassDiscordCheck());
     }
 }
