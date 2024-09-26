@@ -163,12 +163,18 @@ namespace Content.Server.GameTicking
             // whereas the command can also be used on an existing map.
             var loadOpts = loadOptions ?? new MapLoadOptions();
 
+            if (map.MaxRandomOffset != 0f)
+                loadOpts.Offset = _robustRandom.NextVector2(map.MaxRandomOffset);
+
+            if (map.RandomRotation)
+                loadOpts.Rotation = _robustRandom.NextAngle();
+
             var ev = new PreGameMapLoad(targetMapId, map, loadOpts);
             RaiseLocalEvent(ev);
 
             var gridIds = _map.LoadMap(targetMapId, ev.GameMap.MapPath.ToString(), ev.Options);
 
-            _metaData.SetEntityName(_mapManager.GetMapEntityId(targetMapId), $"station map - {map.MapName}");
+            _metaData.SetEntityName(_mapManager.GetMapEntityId(targetMapId), map.MapName);
 
             var gridUids = gridIds.ToList();
             RaiseLocalEvent(new PostGameMapLoad(map, targetMapId, gridUids, stationName));
@@ -242,7 +248,7 @@ namespace Content.Server.GameTicking
                 HumanoidCharacterProfile profile;
                 if (_prefsManager.TryGetCachedPreferences(userId, out var preferences))
                 {
-                    profile = (HumanoidCharacterProfile) preferences.GetProfile(preferences.SelectedCharacterIndex);
+                    profile = (HumanoidCharacterProfile) preferences.SelectedCharacter;
                 }
                 else
                 {
@@ -347,7 +353,10 @@ namespace Content.Server.GameTicking
             _adminLogger.Add(LogType.EmergencyShuttle, LogImpact.High, $"Round ended, showing summary");
 
             //Tell every client the round has ended.
-            var gamemodeTitle = CurrentPreset != null ? Loc.GetString(CurrentPreset.ModeTitle) : string.Empty;
+            // SS220 Round End Titles begin 
+            //var gamemodeTitle = CurrentPreset != null ? Loc.GetString(CurrentPreset.ModeTitle) : string.Empty;
+            var gamemodeTitle = CurrentPreset != null ? CurrentPresetTitleOverride ?? Loc.GetString(CurrentPreset.ModeTitle) : string.Empty;
+            // SS220 Round End Titles end 
 
             // Let things add text here.
             var textEv = new RoundEndTextAppendEvent();
@@ -360,8 +369,10 @@ namespace Content.Server.GameTicking
 
             //Generate a list of basic player info to display in the end round summary.
             var listOfPlayerInfo = new List<RoundEndMessageEvent.RoundEndPlayerInfo>();
+            var listOfSponsors = new List<RoundEndMessageEvent.RoundEndSponsorInfo>(); // SS220 Round End Titles
             // Grab the great big book of all the Minds, we'll need them for this.
             var allMinds = EntityQueryEnumerator<MindComponent>();
+            var pvsOverride = _configurationManager.GetCVar(CCVars.RoundEndPVSOverrides);
             while (allMinds.MoveNext(out var mindId, out var mind))
             {
                 // TODO don't list redundant observer roles?
@@ -392,7 +403,7 @@ namespace Content.Server.GameTicking
                 else if (mind.CurrentEntity != null && TryName(mind.CurrentEntity.Value, out var icName))
                     playerIcName = icName;
 
-                if (TryGetEntity(mind.OriginalOwnedEntity, out var entity))
+                if (TryGetEntity(mind.OriginalOwnedEntity, out var entity) && pvsOverride)
                 {
                     _pvsOverride.AddGlobalOverride(GetNetEntity(entity.Value), recursive: true);
                 }
@@ -424,6 +435,25 @@ namespace Content.Server.GameTicking
             var listOfPlayerInfoFinal = listOfPlayerInfo.OrderBy(pi => pi.PlayerOOCName).ToArray();
             var sound = RoundEndSoundCollection == null ? null : _audio.GetSound(new SoundCollectionSpecifier(RoundEndSoundCollection));
 
+            // SS220 Round End Titles begin
+            var discordManager = IoCManager.Resolve<SS220.Discord.DiscordPlayerManager>();
+            void AddSponsorsTierFrom(Shared.SS220.Discord.SponsorTier tier, IReadOnlyList<string> names)
+            {
+                foreach (var sponsor in names)
+                {
+                    listOfSponsors.Add(new(sponsor, [tier]));
+                }
+            }
+            if (discordManager.CachedSponsorUsers is { } sponsorUsers)
+            {
+                AddSponsorsTierFrom(Shared.SS220.Discord.SponsorTier.CriticalMassShlopa, sponsorUsers.CriticalMassShlopas);
+                AddSponsorsTierFrom(Shared.SS220.Discord.SponsorTier.GoldenShlopa, sponsorUsers.GoldenShlopas);
+                AddSponsorsTierFrom(Shared.SS220.Discord.SponsorTier.HugeShlopa, sponsorUsers.HugeShlopas);
+                AddSponsorsTierFrom(Shared.SS220.Discord.SponsorTier.BigShlopa, sponsorUsers.BigShlopas);
+                AddSponsorsTierFrom(Shared.SS220.Discord.SponsorTier.Shlopa, sponsorUsers.Shlopas);
+            }
+            // SS220 Round End Titles end
+
             var roundEndMessageEvent = new RoundEndMessageEvent(
                 gamemodeTitle,
                 roundEndText,
@@ -431,6 +461,7 @@ namespace Content.Server.GameTicking
                 RoundId,
                 listOfPlayerInfoFinal.Length,
                 listOfPlayerInfoFinal,
+                listOfSponsors.ToArray(), // SS220 Round End Titles
                 sound
             );
             RaiseNetworkEvent(roundEndMessageEvent);
@@ -570,6 +601,7 @@ namespace Content.Server.GameTicking
             // Clear up any game rules.
             ClearGameRules();
             CurrentPreset = null;
+            CurrentPresetTitleOverride = null; // SS220 Round End Titles
 
             _allPreviousGameRules.Clear();
 
@@ -622,11 +654,6 @@ namespace Content.Server.GameTicking
             {
                 LoadMaps();
             }
-        }
-
-        public TimeSpan RoundDuration()
-        {
-            return _gameTiming.CurTime.Subtract(RoundStartTimeSpan);
         }
 
         private void AnnounceRound()
@@ -804,7 +831,7 @@ namespace Content.Server.GameTicking
     }
 
     /// <summary>
-    ///     Event raised after players were assigned jobs by the GameTicker.
+    ///     Event raised after players were assigned jobs by the GameTicker and have been spawned in.
     ///     You can give on-station people special roles by listening to this event.
     /// </summary>
     public sealed class RulePlayerJobsAssignedEvent

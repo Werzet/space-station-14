@@ -89,7 +89,7 @@
   id: Autolathe
   parent: BaseLatheLube
   name: autolathe
-  description: It produces basic items using metal and glass.
+  description: It produces basic items using metal and glass. Has the ability to process blueprints to print new recipes.
   components:
   - type: Sprite
     sprite: Structures/Machines/autolathe.rsi
@@ -115,15 +115,18 @@
   - type: Lathe
     idleState: icon
     runningState: building
+    unlitIdleState: unlit
+    unlitRunningState: unlit-building
     staticRecipes:
       - ClothingEyesGlassesMeson #SS220 Craftable-Welding-Mask
+      - ClothingWristWatch #SS220 Wrist Watch
       - Wirecutter
       - Igniter
       - Signaller
       - Screwdriver
       - Welder
       - Wrench
-      - Crowbar
+      - CrowbarGreen
       - Multitool
       - NetworkConfigurator
       - SprayPainter
@@ -136,8 +139,6 @@
       - AirTank
       - GasAnalyzer
       - UtilityBelt
-      - Fulton
-      - FultonBeacon
       - Pickaxe
       - ModularReceiver
       - AppraisalTool
@@ -198,11 +199,15 @@
       - WeaponCapacitorRechargerCircuitboard
       - HandheldStationMap
       - ClothingHeadHatWelding
+      - WetFloorSign
+      - ClothingHeadHatCone
+      - Flare
   - type: EmagLatheRecipes
     emagStaticRecipes:
       - BoxLethalshot
       - BoxShotgunFlare
       - BoxShotgunSlug
+      - CombatKnife
       - MagazineBoxLightRifle
       - MagazineBoxMagnum
       - MagazineBoxPistol
@@ -223,6 +228,18 @@
       - RiotShield
       - SpeedLoaderMagnum
       - SpeedLoaderMagnumEmpty
+  - type: BlueprintReceiver
+    whitelist:
+      tags:
+      - BlueprintAutolathe
+  - type: ContainerContainer
+    containers:
+      machine_board: !type:Container
+      machine_parts: !type:Container
+      blueprint: !type:Container
+  - type: EmptyOnMachineDeconstruct
+    containers:
+    - blueprint
 
 - type: entity
   id: AutolatheHyperConvection
@@ -265,6 +282,8 @@
   - type: Lathe
     idleState: icon
     runningState: building
+    unlitIdleState: unlit
+    unlitRunningState: unlit-building
     staticRecipes:
     - LargeBeaker
     - Dropper
@@ -272,6 +291,7 @@
     dynamicRecipes:
       - PowerDrill
       - MiningDrill
+      - MiningDrillDiamond
       - AnomalyScanner
       - AnomalyLocator
       - AnomalyLocatorWide
@@ -307,9 +327,12 @@
       - PowerCellHigh
       - WeaponPistolCHIMP
       - ClothingMaskWeldingGas
+      - MineralScannerEmpty
+      - AdvancedMineralScannerEmpty
       - WeaponGauntletGorilla
       - SynthesizerInstrument
       - ClothingShoesBootsMagSci
+      - ClothingShoesBootsMoon
       - ClothingShoesBootsSpeed
       - NodeScanner
       - HolofanProjector
@@ -319,7 +342,6 @@
       - WeaponLaserSvalinn
       - WeaponProtoKineticAccelerator
       - WeaponTetherGun
-      - WeaponGrapplingGun
       - ClothingBackpackHolding
       - ClothingBackpackSatchelHolding
       - ClothingBackpackDuffelHolding
@@ -330,13 +352,17 @@
       - FauxTileJungleAstroGrass
       - FauxTileAstroIce
       - FauxTileAstroSnow
+      - FauxTileAstroSand #SS220-beachCraftng
       - OreBagOfHolding
       - DeviceQuantumSpinInverter
+      - ThermalVisorRND # SS220 Thermals
+      - ClothingEyesHudSupply #ss220 hud cargo add
   - type: EmagLatheRecipes
     emagDynamicRecipes:
       - BoxBeanbag
       - BoxShotgunIncendiary
       - BoxShotgunUranium
+      # - BoxShellTranquilizer
       - ExplosivePayload
       - GrenadeBlast
       - GrenadeEMP
@@ -375,6 +401,7 @@
       - WeaponXrayCannon
       - WeaponEnergyCrossbow #SS220 Energy Crossbow
       - WeaponTaser #SS220 taserback
+      - ClothingEyesThermalGlassesSecurity #SS220 Thermals
 
 - type: entity
   id: ProtolatheHyperConvection
@@ -414,8 +441,8 @@
     - ProtolatheMachineCircuitboard
     - AutolatheMachineCircuitboard
     - CircuitImprinterMachineCircuitboard
+    - BiogeneratorMachineCircuitboard
     - OreProcessorMachineCircuitboard
-    - MaterialReclaimerMachineCircuitboard
     - ElectrolysisUnitMachineCircuitboard
     - CentrifugeMachineCircuitboard
     - ChemDispenserMachineCircuitboard
@@ -435,6 +462,9 @@
     - BoozeDispenserMachineCircuitboard
     - SodaDispenserMachineCircuitboard
     - SpaceHeaterMachineCircuitBoard
+    - CutterMachineCircuitboard
+    - StationAnchorCircuitboard
+    - SalvageMagnetMachineCircuitboard
     dynamicRecipes:
       - ThermomachineFreezerMachineCircuitBoard
       - HellfireFreezerMachineCircuitBoard
@@ -482,8 +512,6 @@
       - PortableGeneratorPacmanMachineCircuitboard
       - PortableGeneratorSuperPacmanMachineCircuitboard
       - PortableGeneratorJrPacmanMachineCircuitboard
-      - WallmountGeneratorElectronics
-      - WallmountGeneratorAPUElectronics
       - WallmountSubstationElectronics
       - PowerCageRechargerCircuitboard
       - EmitterCircuitboard
@@ -519,6 +547,7 @@
         - Sheet
         - RawMaterial
         - Ingot
+  - type: RequireProjectileTarget
 
 - type: entity
   id: CircuitImprinterHyperConvection
@@ -535,7 +564,7 @@
   id: ExosuitFabricator
   parent: BaseLatheLube
   name: exosuit fabricator
-  description: Creates parts for robotics and other mechanical needs
+  description: Creates parts for robotics and other mechanical needs.
   components:
   - type: Sprite
     sprite: Structures/Machines/exosuit_fabricator.rsi
@@ -650,7 +679,7 @@
 - type: entity
   id: Biofabricator
   parent: BaseLathe
-  name: biofabricator
+  name: biocube fabricator
   description: Produces animal cubes using biomass.
   components:
   - type: Sprite
@@ -659,16 +688,20 @@
     layers:
     - state: icon
       map: ["enum.LatheVisualLayers.IsRunning"]
+      color: "#ffaa99"
     - state: unlit
       shader: unshaded
       map: ["enum.PowerDeviceVisualLayers.Powered"]
+      color: "#ffaaaa"
     - state: inserting
       map: ["enum.MaterialStorageVisualLayers.Inserting"]
+      color: "#ffaaaa"
     - state: panel
       map: ["enum.WiresVisualLayers.MaintenancePanel"]
   - type: Machine
     board: BiofabricatorMachineCircuitboard
   - type: MaterialStorage
+    ignoreColor: true
     whitelist:
       tags:
         - Sheet
@@ -720,33 +753,43 @@
       - BoxShotgunPractice
       - BoxShotgunSlug
       - ClothingEyesHudSecurity
+      - CombatKnife
       - Flash
       - ForensicPad
       - Handcuffs
       - MagazineBoxLightRifle
       - MagazineBoxLightRiflePractice
+      - MagazineBoxLightRifleRubber #SS220-fix Magazine Pistol Rubber Lathe (fix: https://github.com/SerbiaStrong-220/space-station-14/issues/1799)
       - MagazineBoxMagnum
       - MagazineBoxMagnumPractice
+      - MagazineBoxMagnumRubber #SS220-fix Magazine Pistol Rubber Lathe (fix: https://github.com/SerbiaStrong-220/space-station-14/issues/1799)
       - MagazineBoxPistol
       - MagazineBoxPistolPractice
+      - MagazineBoxPistolRubber #SS220-fix Magazine Pistol Rubber Lathe (fix: https://github.com/SerbiaStrong-220/space-station-14/issues/1799)
       - MagazineBoxRifle
       - MagazineBoxRiflePractice
+      - MagazineBoxRifleRubber #SS220-fix Magazine Pistol Rubber Lathe (fix: https://github.com/SerbiaStrong-220/space-station-14/issues/1799)
       - MagazineLightRifle
       - MagazineLightRifleEmpty
+      - MagazineLightRifleRubber #SS220-fix Magazine Pistol Rubber Lathe (fix: https://github.com/SerbiaStrong-220/space-station-14/issues/1799)
       - MagazinePistol
       - MagazinePistolEmpty
+      - MagazinePistolRubber #SS220-fix Magazine Pistol Rubber Lathe (fix: https://github.com/SerbiaStrong-220/space-station-14/issues/1799)
       - MagazinePistolSubMachineGun
+      - MagazinePistolSubMachineGunRubber #SS220 missing rubber fix
       - MagazinePistolSubMachineGunEmpty
       - MagazinePistolSubMachineGunTopMounted
       - MagazinePistolSubMachineGunTopMountedEmpty
       - MagazineRifle
       - MagazineRifleEmpty
+      - MagazineRifleRubber #SS220-fix Magazine Pistol Rubber Lathe (fix: https://github.com/SerbiaStrong-220/space-station-14/issues/1799)
       - MagazineShotgun
       - MagazineShotgunEmpty
       - MagazineShotgunSlug
       - RiotShield
       - SpeedLoaderMagnum
       - SpeedLoaderMagnumEmpty
+      - SpeedLoaderMagnumRubber #SS220-fix Magazine Pistol Rubber Lathe (fix: https://github.com/SerbiaStrong-220/space-station-14/issues/1799)
       - Stunbaton
       - TargetClown
       - TargetHuman
@@ -758,6 +801,8 @@
       - BoxBeanbag
       - BoxShotgunIncendiary
       - BoxShotgunUranium
+      # - BoxShellTranquilizer
+      - ClothingBackpackElectropack
       - ExplosivePayload
       - FlashPayload
       - GrenadeBlast
@@ -806,6 +851,7 @@
       - WeaponXrayCannon
       - WeaponEnergyCrossbow #SS220 Energy Crossbow
       - WeaponTaser #SS220 taserback
+      - ClothingEyesThermalGlassesSecurity #SS220 Thermals
   - type: MaterialStorage
     whitelist:
       tags:
@@ -841,21 +887,37 @@
         - BoxLethalshot
         - BoxShotgunFlare
         - BoxShotgunSlug
+       #  - BoxShellTranquilizer
         - MagazineBoxLightRifle
+        - MagazineBoxLightRifleRubber #SS220 missing rubber fix
         - MagazineBoxMagnum
+        - MagazineBoxMagnumRubber #SS220 missing rubber fix
         - MagazineBoxPistol
+        - MagazineBoxPistolRubber #SS220 missing rubber fix
         - MagazineBoxRifle
+        - MagazineBoxRifleRubber #SS220 missing rubber fix
         - MagazineLightRifle
+        - MagazineLightRifleRubber #SS220 missing rubber fix
         - MagazineLightRifleEmpty
         - MagazinePistol
+        - MagazinePistolRubber #SS220 missing rubber fix
         - MagazinePistolEmpty
+        #SS220 forgotten mags add begin
+        - MagazinePistolSubMachineGun
+        - MagazinePistolSubMachineGunRubber #SS220 missing rubber fix
+        - MagazinePistolSubMachineGunEmpty
+        - MagazinePistolSubMachineGunTopMounted
+        - MagazinePistolSubMachineGunTopMountedEmpty
+        #SS220 forgotten mags add end
         - MagazineRifle
+        - MagazineRifleRubber #SS220 missing rubber fix
         - MagazineRifleEmpty
         - MagazineShotgun
         - MagazineShotgunEmpty
         - MagazineShotgunSlug
         # - ShellTranquilizer # SS220 No-Tranquilizer
         - SpeedLoaderMagnum
+        - SpeedLoaderMagnumRubber #SS220 missing rubber fix
         - SpeedLoaderMagnumEmpty
     - type: MaterialStorage
       whitelist:
@@ -1066,14 +1128,6 @@
       - ClothingOuterWinterWardenUnarmored
       - ClothingOuterWinterQM
       - ClothingOuterWinterRD
-      - ClothingNeckMantleCap
-      - ClothingNeckMantleCE
-      - ClothingNeckMantleCMO
-      - ClothingNeckMantleHOP
-      - ClothingNeckMantleHOS
-      - ClothingNeckMantleHOSShoulder # Corvax-Resprite: Old mantle
-      - ClothingNeckMantleRD
-      - ClothingNeckMantleQM
       - ClothingOuterWinterMusician
       - ClothingOuterWinterClown
       - ClothingOuterWinterMime
@@ -1119,13 +1173,25 @@
       - CarpetWhite
   - type: EmagLatheRecipes
     emagStaticRecipes: #SS220 TODO: Rework recipes what are there after EMAG
-      - ClothingHeadHatCentcomcap
-      - ClothingHeadHatCentcom
-      - ClothingUniformJumpsuitCentcomAgent
-      - ClothingUniformJumpsuitCentcomFormal
-      - ClothingUniformJumpskirtCentcomFormalDress
-      - ClothingUniformJumpsuitCentcomOfficer
-      - ClothingUniformJumpsuitCentcomOfficial
+#SS220-Centcom-EmagLatheRecipes-Fix-Begin
+      # - ClothingHeadHatCentcomcap
+      # - ClothingHeadHatCentcom
+      # - ClothingUniformJumpsuitCentcomAgent
+      # - ClothingUniformJumpsuitCentcomFormal
+      # - ClothingUniformJumpskirtCentcomFormalDress
+      # - ClothingUniformJumpsuitCentcomOfficer
+      # - ClothingUniformJumpsuitCentcomOfficial
+      - ClothingHeadHatNavyFieldOfficerCap
+      - ClothingHeadHatBeretNanoTrasenOfficer
+      - ClothingHeadHatBeretNanoTrasenDiplomat
+      - ClothingUniformCentCommOfficer
+      - ClothingUniformJumpsuitCentcomOfficerTurtleneck
+      - ClothingUniformJumpskirtCentcomOfficerTurtleneck
+      - ClothingUniformNanotrasenDiplomat
+      - ClothingOuterWinterCentcomm
+      - ClothingNeckCloakFieldOfficerCentComm
+      - ClothingNeckScarfCentcomm
+#SS220-Centcom-EmagLatheRecipes-Fix-End
       - ClothingHeadHatSyndieMAA
       - ClothingHeadHatSyndie
       - ClothingUniformJumpsuitOperative
@@ -1138,7 +1204,7 @@
       - ClothingUniformJumpsuitPyjamaSyndicatePink
       - ClothingHeadPyjamaSyndicateRed
       - ClothingUniformJumpsuitPyjamaSyndicateRed
-      - ClothingOuterWinterCentcom
+      # - ClothingOuterWinterCentcom SS220-Centcom-EmagLatheRecipes-Fix
       - ClothingOuterWinterSyndie
       - ClothingOuterWinterSyndieCap
   - type: MaterialStorage
@@ -1147,6 +1213,70 @@
         - Sheet
         - RawMaterial
         - Ingot
+
+- type: entity
+  id: Biogenerator
+  parent: BaseLathe
+  name: biogenerator
+  description: Converts plants into biomass, which can be used to construct useful items.
+  components:
+  - type: Sprite
+    sprite: Structures/Machines/biofabricator.rsi
+    snapCardinals: true
+    layers:
+    - state: icon
+      map: ["enum.LatheVisualLayers.IsRunning"]
+    - state: unlit
+      shader: unshaded
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+    - state: inserting
+      map: ["enum.MaterialStorageVisualLayers.Inserting"]
+    - state: panel
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+  - type: Machine
+    board: BiogeneratorMachineCircuitboard
+  - type: MaterialStorage
+    insertOnInteract: false
+    canEjectStoredMaterials: false
+  - type: ProduceMaterialExtractor
+  - type: ItemSlots
+    slots:
+      beaker_slot:
+        name: lathe-component-output-slot-beaker-name
+        whitelist:
+          components:
+          - FitsInDispenser
+  - type: ContainerContainer
+    containers:
+      machine_board: !type:Container
+      machine_parts: !type:Container
+      beaker_slot: !type:ContainerSlot
+  - type: Lathe
+    reagentOutputSlotId: beaker_slot
+    idleState: icon
+    runningState: building
+    staticRecipes:
+    - BioGenMilk
+    - BioGenMilkSoy
+    - BioGenEthanol
+    - BioGenCream
+    - BioGenBlackpepper
+    - BioGenEnzyme
+    - BioGenFlour
+    - BioGenSugar
+    - BioGenMonkeyCube
+    - BioGenKoboldCube
+    - BioGenMaterialCloth1
+    - BioGenMaterialCardboard1
+    - BioGenPaper
+    - BioGenPaperRolling1
+    - BioGenCandle
+    - BioGenPlantBGone
+    - BioGenWeedKiller
+    - BioGenPestKiller
+    - BioGenLeft4Zed
+    - BioGenEZNutrient
+    - BioGenRobustHarvest
 
 - type: entity
   parent: BaseLathe
@@ -1176,17 +1306,19 @@
     - type: Lathe
       idleState: icon
       runningState: building
+      defaultProductionAmount: 10
       staticRecipes:
-        - SheetSteel30
-        - SheetGlass30
-        - SheetRGlass30
-        - SheetPlasma30
-        - SheetPGlass30
-        - SheetRPGlass30
-        - SheetUranium30
-        - IngotGold30
-        - IngotSilver30
-        - MaterialBananium10
+        - SheetSteel
+        - SheetGlass1
+        - SheetRGlass
+        - SheetPlasma1
+        - SheetPGlass1
+        - SheetRPGlass1
+        - SheetUranium1
+        - IngotGold1
+        - IngotSilver1
+        - MaterialBananium1
+        - MaterialDiamond
 
 - type: entity
   parent: OreProcessor
@@ -1202,21 +1334,21 @@
     materialUseMultiplier: 0.75
     timeMultiplier: 0.5
     staticRecipes:
-      - SheetSteel30
-      - SheetGlass30
-      - SheetRGlass30
-      - SheetPlasma30
-      - SheetPGlass30
-      - SheetRPGlass30
-      - SheetPlasteel30
-      - SheetUranium30
-      - SheetUGlass30
-      - SheetRUGlass30
-      - IngotGold30
-      - IngotSilver30
-      - MaterialBananium10
+      - SheetSteel
+      - SheetGlass1
+      - SheetRGlass
+      - SheetPlasma1
+      - SheetPGlass1
+      - SheetRPGlass1
+      - SheetPlasteel1
+      - SheetUranium1
+      - SheetUGlass1
+      - SheetRUGlass1
+      - IngotGold1
+      - IngotSilver1
+      - MaterialBananium1
+      - MaterialDiamond
 
-#SS220-Sheetifier-rework-start
 - type: entity
   parent: BaseLathe
   id: Sheetifier
@@ -1249,77 +1381,158 @@
     staticRecipes:
     - MaterialSheetMeat
     - SheetPaper
-    - TileSteel
-    - TileMetalDiamond
-    - TileWood
-    - TileWhite
-    - TileDark
-    - TileTechmaint
-    - TileMono
-    - TileLino
-    - TileElevatorShaft
-    - TileRockVault
-    - TileBlue
-    - TileLime
-    - TileMining
-    - TileMiningDark
-    - TileMiningLight
-    - TileFreezer
-    - TileShowroom
-    - TileHydro
-    - TileBar
-    - TileClown
-    - TileMime
-    - TileKitchen
-    - TileLaundry
-    - TileConcrete
-    - TileGrayConcrete
-    - TileOldConcrete
-    - TileArcadeBlue
-    - TileArcadeBlue2
-    - TileArcadeRed
-    - TileEighties
-    - TileCarpetClown
-    - TileCarpetOffice
-    - TileBoxing
-    - TileGym
-    - TileShuttleWhite
-    - TileShuttleBlue
-    - TileShuttleOrange
-    - TileShuttlePurple
-    - TileShuttleRed
-    - TileShuttleGrey
-    - TileShuttleBlack
-    - TileGold
-    - TileSilver
-    - TileWoodPattern
-    - TileFlesh
-    - TileSteelMaint
-    - TileGratingMaint
-    - TileWoodLarge
-    - TileSteelReinforced
-    - TileWhiteReinforced
-    - TileDarkReinforced
-    - TileDutch
-    - TileDutchMini
-    - TileKitchenRed #SS220 new kitchen tile
-    #SS220-NewWoodTiles-Begin
-    - TileWoodParquet
-    - TileWoodBlack
-    - TileWoodDark
-    - TileWoodLight
-    - TileWoodRed
-    - TileWoodLargeBlack
-    - TileWoodLargeDark
-    - TileWoodLargeLight
-    - TileWoodLargeRed
-    - TileWoodParquetBlack
-    - TileWoodParquetDark
-    - TileWoodParquetLight
-    - TileWoodParquetRed
-    - TileWoodTileBlack
-    - TileWoodTileDark
-    - TileWoodTileLight
-    - TileWoodTileRed
-    #SS220-NewWoodTiles-End
-#SS220-Sheetifier-rework-end
+
+- type: entity
+  parent: BaseLathe
+  id: CutterMachine
+  name: cutter machine
+  description: This is a cutter. It cuts. Add variety to your station floor with eye-pleasing patterns! Don't stick your fingers in.
+  components:
+  - type: Transform
+    noRot: false
+  - type: Sprite
+    sprite: Structures/Machines/cuttermachine.rsi
+    snapCardinals: true
+    layers:
+    - state: icon
+      map: ["enum.LatheVisualLayers.IsRunning"]
+    - state: unlit
+      shader: unshaded
+      map: ["enum.PowerDeviceVisualLayers.Powered"]
+    - state: panel
+      map: ["enum.WiresVisualLayers.MaintenancePanel"]
+  - type: Machine
+    board: CutterMachineCircuitboard
+  - type: Lathe
+    producingSound: /Audio/Machines/cutter.ogg
+    idleState: icon
+    runningState: building
+    staticRecipes:
+      - FloorTileItemDark
+      - FloorTileItemDarkDiagonalMini
+      - FloorTileItemDarkDiagonal
+      - FloorTileItemDarkHerringbone
+      - FloorTileItemDarkMini
+      - FloorTileItemDarkMono
+      - FloorTileItemDarkPavement
+      - FloorTileItemDarkPavementVertical
+      - FloorTileItemDarkOffset
+      - FloorTileItemSteelCheckerDark
+      - FloorTileItemSteel
+      - FloorTileItemSteelOffset
+      - FloorTileItemSteelDiagonalMini
+      - FloorTileItemSteelDiagonal
+      - FloorTileItemSteelHerringbone
+      - FloorTileItemSteelMini
+      - FloorTileItemSteelMono
+      - FloorTileItemSteelPavement
+      - FloorTileItemSteelPavementVertical
+      - FloorTileItemWhite
+      - FloorTileItemWhiteOffset
+      - FloorTileItemWhiteDiagonalMini
+      - FloorTileItemWhiteDiagonal
+      - FloorTileItemWhiteHerringbone
+      - FloorTileItemWhiteMini
+      - FloorTileItemWhiteMono
+      - FloorTileItemWhitePavement
+      - FloorTileItemWhitePavementVertical
+      - FloorTileItemSteelCheckerLight
+      - FloorTileItemGratingMaint
+      - FloorTileItemTechmaint
+      - FloorTileItemSteelMaint
+      - FloorTileItemWood
+      - FloorTileItemWoodLarge
+      - FloorTileItemWoodPattern
+      - FloorTileItemConcrete
+      - FloorTileItemConcreteMono
+      - FloorTileItemConcreteSmooth
+      - FloorTileItemGrayConcrete
+      - FloorTileItemGrayConcreteMono
+      - FloorTileItemGrayConcreteSmooth
+      - FloorTileItemOldConcrete
+      - FloorTileItemOldConcreteMono
+      - FloorTileItemOldConcreteSmooth
+  #SS220-Sheetifier-rework-begin
+      #- TileSteel
+      - TileMetalDiamond
+      #- TileWood
+      #- TileWhite
+      #- TileDark
+      #- TileTechmaint
+      - TileMono
+      - TileLino
+      - TileElevatorShaft
+      - TileRockVault
+      - TileBlue
+      - TileLime
+      - TileMining
+      - TileMiningDark
+      - TileMiningLight
+      - TileFreezer
+      - TileShowroom
+      - TileHydro
+      - TileBar
+      - TileClown
+      - TileMime
+      - TileKitchen
+      - TileLaundry
+      #- TileConcrete
+      #- TileGrayConcrete
+      #- TileOldConcrete
+      - TileArcadeBlue
+      - TileArcadeBlue2
+      - TileArcadeRed
+      - TileEighties
+      - TileCarpetClown
+      - TileCarpetOffice
+      - TileBoxing
+      - TileGym
+      - TileShuttleWhite
+      - TileShuttleBlue
+      - TileShuttleOrange
+      - TileShuttlePurple
+      - TileShuttleRed
+      - TileShuttleGrey
+      - TileShuttleBlack
+      - TileGold
+      - TileSilver
+      #- TileWoodPattern
+      - TileFlesh
+      #- TileSteelMaint
+      #- TileGratingMaint
+      #- TileWoodLarge
+      - TileSteelReinforced
+      - TileWhiteReinforced
+      - TileDarkReinforced
+      - TileDutch
+      - TileDutchMini
+      - TileKitchenRed #SS220 new kitchen tile
+      #SS220-NewWoodTiles-Begin
+      - TileWoodParquet
+      - TileWoodBlack
+      - TileWoodDark
+      - TileWoodLight
+      - TileWoodRed
+      - TileWoodLargeBlack
+      - TileWoodLargeDark
+      - TileWoodLargeLight
+      - TileWoodLargeRed
+      - TileWoodParquetBlack
+      - TileWoodParquetDark
+      - TileWoodParquetLight
+      - TileWoodParquetRed
+      - TileWoodTileBlack
+      - TileWoodTileDark
+      - TileWoodTileLight
+      - TileWoodTileRed
+      #SS220-NewWoodTiles-End
+  #SS220-Sheetifier-rework-end
+  - type: MaterialStorage
+    whitelist:
+      tags:
+        - Sheet
+        - Metal
+        - Wooden
+        - RawMaterial
+        - Plastic
+        - Ingot

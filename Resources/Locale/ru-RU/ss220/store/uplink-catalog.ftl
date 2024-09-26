@@ -2,9 +2,23 @@
 uplink-ecrossbow-name = { ent-WeaponMiniEnergyCrossbow }
 uplink-ecrossbow-desc = { ent-WeaponMiniEnergyCrossbow.desc }
 
+#Misc
+
+uplink-clothing-eyes-hud-syndicate-agent-name = Визор агента Синдиката
+uplink-clothing-eyes-hud-syndicate-agent-desc = Продвинутый визор Синдиката с индикатором на стекле, предназначенный для более точного обнаружения гуманоидов с их последующим уничтожением. Способен опеределять уровень здоровья гуманоидов и киборгов.
+
+# Disruption
+
+uplink-syndicate-pen-signaller = Ручка-передатчик
+uplink-syndicate-pen-signaller-desc = Ручка, со встроенным передатчиком, способным отправить сигнал на устройство.
+
 # Implants
 uplink-mindslave-implanter-name = Имплантер Подчинитель разума
 uplink-mindslave-implanter-desc = { ent-MindSlaveImplant.desc }
+
+#JobItems
+uplink-mime-relic-name = { ent-SacredRelicMime }
+uplink-mime-relic-desc = Ценная реликвия Ордена Тишины, Вашего ордена. Зажав в руке, позволяет мимам поставить сразу три невидимые стены, закрывающие широкий проход, раз в 90 секунд.
 
 # Pointless
 uplink-expensive-lighter-name = { ent-ExpensiveLighterSyndicate }

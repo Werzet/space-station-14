@@ -74,15 +74,6 @@
       board: [ DoorElectronicsHydroponics ]
 
 - type: entity
-  parent: AirlockCommandLocked
-  id: AirlockServiceCaptainLocked
-  suffix: Captain, Locked
-  components:
-  - type: ContainerFill
-    containers:
-      board: [ DoorElectronicsCaptain ]
-
-- type: entity
   parent: AirlockExternal
   id: AirlockExternalLocked
   suffix: External, Locked
@@ -99,6 +90,8 @@
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsCargo ]
+  - type: Wires
+    layoutId: AirlockCargo
 
 - type: entity
   parent: AirlockExternal
@@ -108,6 +101,8 @@
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsEngineering ]
+  - type: Wires
+    layoutId: AirlockEngineering
 
 - type: entity
   parent: AirlockExternal
@@ -117,6 +112,8 @@
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsAtmospherics ]
+  - type: Wires
+    layoutId: AirlockEngineering
 
 - type: entity
   parent: AirlockExternal
@@ -126,6 +123,8 @@
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsSyndicateAgent ]
+  - type: Wires
+    layoutId: AirlockSecurity
 
 - type: entity
   parent: AirlockExternal
@@ -135,6 +134,8 @@
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsNukeop ]
+  - type: Wires
+    layoutId: AirlockSecurity
 
 - type: entity
   parent: AirlockFreezer
@@ -244,7 +245,6 @@
     containers:
       board: [ DoorElectronicsMorgue ]
 
-
 - type: entity
   parent: AirlockScience
   id: AirlockScienceLocked
@@ -266,7 +266,7 @@
 - type: entity
   parent: AirlockCentralCommand
   id: AirlockCentralCommandLocked
-  noSpawn: true #SS220 New CentCom
+  categories: [ HideSpawnMenu ] #SS220 New CentCom
   suffix: Central Command, Locked
   components:
   - type: ContainerFill
@@ -441,7 +441,7 @@
       board: [ DoorElectronicsTheatre ]
 
 - type: entity
-  parent: AirlockGlass
+  parent: AirlockServiceGlassLocked
   id: AirlockBarGlassLocked
   suffix: Bar, Locked
   components:
@@ -466,6 +466,8 @@
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsCargo ]
+  - type: Wires
+    layoutId: AirlockCargo
 
 - type: entity
   parent: AirlockExternalGlass
@@ -475,6 +477,8 @@
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsSyndicateAgent ]
+  - type: Wires
+    layoutId: AirlockSecurity
 
 - type: entity
   parent: AirlockExternalGlass
@@ -484,6 +488,8 @@
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsNukeop ]
+  - type: Wires
+    layoutId: AirlockSecurity
 
 - type: entity
   parent: AirlockExternalGlass
@@ -493,6 +499,8 @@
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsEngineering ]
+  - type: Wires
+    layoutId: AirlockEngineering
 
 - type: entity
   parent: AirlockExternalGlass
@@ -502,6 +510,8 @@
   - type: ContainerFill
     containers:
       board: [ DoorElectronicsAtmospherics ]
+  - type: Wires
+    layoutId: AirlockEngineering
 
 - type: entity
   parent: AirlockServiceGlassLocked
@@ -595,6 +605,15 @@
 
 - type: entity
   parent: AirlockMedicalGlass
+  id: AirlockMedicalMorgueGlassLocked
+  suffix: Morgue, Locked
+  components:
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsMorgue ]
+
+- type: entity
+  parent: AirlockMedicalGlass
   id: AirlockMedicalGlassLocked
   suffix: Medical, Locked
   components:
@@ -632,7 +651,7 @@
 - type: entity
   parent: AirlockCentralCommandGlass
   id: AirlockCentralCommandGlassLocked
-  noSpawn: true #SS220 New CentCom
+  categories: [ HideSpawnMenu ] #SS220 New CentCom
   suffix: Central Command, Locked
   components:
   - type: ContainerFill
@@ -1164,6 +1183,9 @@
   components:
   - type: PriorityDock
     tag: DockArrivals
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsExternal ]
 
 - type: entity
   parent: AirlockGlassShuttle
@@ -1171,6 +1193,13 @@
   suffix: External, Escape 3x4, Glass, Docking
   components:
   - type: GridFill
+    addComponents:
+    - type: IFF
+      flags:
+      - HideLabel
+  - type: ContainerFill
+    containers:
+      board: [ DoorElectronicsExternal ]
 
 #HighSecDoors
 - type: entity

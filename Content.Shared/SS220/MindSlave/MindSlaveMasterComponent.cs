@@ -11,7 +11,7 @@ namespace Content.Shared.SS220.MindSlave;
 /// Component, used to mark the master of some enslaved minds.
 /// </summary>
 [RegisterComponent, NetworkedComponent, AutoGenerateComponentState]
-public sealed partial class MindSlaveMasterComponent : Component, IAntagStatusIconComponent
+public sealed partial class MindSlaveMasterComponent : Component
 {
     /// <summary>
     /// List of all enslaved entities, which were enslaved by the owner.
@@ -19,7 +19,7 @@ public sealed partial class MindSlaveMasterComponent : Component, IAntagStatusIc
     [ViewVariables(VVAccess.ReadOnly), AutoNetworkedField]
     public List<EntityUid> EnslavedEntities = new();
 
-    public ProtoId<StatusIconPrototype> StatusIcon { get; set; } = "MindSlaveMasterIcon";
+    public ProtoId<FactionIconPrototype> StatusIcon { get; set; } = "MindSlaveMasterIcon";
 
     public bool IconVisibleToGhost { get; set; } = false;
 }
