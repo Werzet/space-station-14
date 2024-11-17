@@ -15,6 +15,7 @@ jobs:
     steps:
     - uses: actions-ecosystem/action-remove-labels@v1
       with:
+      github_token: ${{ github.token }}
         labels: |
           Status: Needs Review
           Status: Awaiting Changes
