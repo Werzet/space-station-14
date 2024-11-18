@@ -41,6 +41,10 @@ public sealed class DiscordPlayerManager : IPostInjectInit, IDisposable
     private bool _isDiscordAuthEnabled = false;
     private string _apiKey = string.Empty;
 
+    private string _linkApiUrl = string.Empty;
+    private bool _isDiscordLinkRequired = false;
+    private string _linkApiKey = string.Empty;
+
     public event EventHandler<ICommonSession>? PlayerVerified;
 
     public void Initialize()
@@ -56,6 +60,14 @@ public sealed class DiscordPlayerManager : IPostInjectInit, IDisposable
         _cfg.OnValueChanged(CCCVars.DiscordAuthApiUrl, v => _apiUrl = v, true);
         _cfg.OnValueChanged(CCCVars.DiscordAuthEnabled, v => _isDiscordAuthEnabled = v, true);
         _cfg.OnValueChanged(CCCVars.DiscordAuthApiKey, v => _apiKey = v,
+        //{
+        //    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", v);
+        //},
+        true);
+
+        _cfg.OnValueChanged(CCVars220.DiscordLinkApiUrl, v => _linkApiUrl = v, true);
+        _cfg.OnValueChanged(CCVars220.DiscordLinkRequired, v => _isDiscordLinkRequired = v, true);
+        _cfg.OnValueChanged(CCVars220.DiscordLinkApiKey, v => _linkApiKey = v,
         //{
         //    _httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", v);
         //},
@@ -105,7 +117,7 @@ public sealed class DiscordPlayerManager : IPostInjectInit, IDisposable
     {
         if (e.NewStatus == SessionStatus.Connected)
         {
-            if (!_isDiscordAuthEnabled)
+            if (!_isDiscordLinkRequired)
             {
                 PlayerVerified?.Invoke(this, e.Session);
                 return;
@@ -193,7 +205,7 @@ public sealed class DiscordPlayerManager : IPostInjectInit, IDisposable
         {
             _sawmill.Debug($"Player {userId} get Discord link");
 
-            var requestUrl = $"{_apiUrl}/api/linkAccount/link14/{WebUtility.UrlEncode(userId.ToString())}?apiKey={_apiKey}";
+            var requestUrl = $"{_linkApiUrl}/api/linkAccount/link14/{WebUtility.UrlEncode(userId.ToString())}?apiKey={_linkApiKey}";
             var response = await _httpClient.PostAsync(requestUrl, content: null, CancellationToken.None);
             if (!response.IsSuccessStatusCode)
             {
@@ -219,7 +231,7 @@ public sealed class DiscordPlayerManager : IPostInjectInit, IDisposable
         {
             _sawmill.Debug($"Player {userId} check Discord link");
 
-            var requestUrl = $"{_apiUrl}/api/linkAccount/checkLink14/{WebUtility.UrlEncode(userId.ToString())}?apiKey={_apiKey}";
+            var requestUrl = $"{_linkApiUrl}/api/linkAccount/checkLink14/{WebUtility.UrlEncode(userId.ToString())}?apiKey={_linkApiKey}";
 
             var response = await _httpClient.GetAsync(requestUrl, CancellationToken.None);
 

@@ -55,4 +55,22 @@ public sealed class CCVars220
     /// </summary>
     public static readonly CVarDef<float> DiscordSponsorsCacheRefreshIntervalSeconds =
         CVarDef.Create("discord_sponsors_cache.refresh_interval_seconds", 60f * 60f * 4f, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     
+    /// </summary>
+    public static readonly CVarDef<bool> DiscordLinkRequired =
+        CVarDef.Create("discord_auth.link_requierd", false, CVar.SERVERONLY);
+
+    /// <summary>
+    ///     
+    /// </summary>
+    public static readonly CVarDef<string> DiscordLinkApiUrl =
+        CVarDef.Create("discord_auth.link_url", "", CVar.SERVERONLY);
+
+    /// <summary>
+    ///     
+    /// </summary>
+    public static readonly CVarDef<string> DiscordLinkApiKey =
+        CVarDef.Create("discord_auth.link_key", "", CVar.SERVERONLY | CVar.CONFIDENTIAL);
 }
