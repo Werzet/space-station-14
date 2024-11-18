@@ -17,6 +17,15 @@
       role: JobSecurityOfficer
       time: 360000 # 100 hrs
 
+- type: loadoutEffectGroup
+  id: SecuritySecVaas
+  effects:
+  - !type:JobRequirementLoadoutEffect
+    requirement:
+      !type:RoleTimeRequirement
+      role: JobSecurityOfficer
+      time: 180000 #50hrs
+
 # Glasses
 - type: loadout
   id: GlassesSecurity
@@ -61,6 +70,14 @@
   equipment:
     jumpsuit: ClothingUniformTacticalSecurity
 
+- type: loadout
+  id: JumpsuitSecVaas
+  effects:
+  - !type:GroupLoadoutEffect
+    proto: SecuritySecVaas
+  equipment:
+    jumpsuit: ClothingUniformJumpsuitVaas
+
 # Head
 - type: loadout
   id: HatCowboyBlack
@@ -85,11 +102,6 @@
     mask: ClothingMaskNeckGaiter
 
 # Neck
-- type: loadout
-  id: Headphones
-  equipment:
-    neck: ClothingNeckHeadphones
-
 - type: loadout
   id: ProtectGear
   equipment:
