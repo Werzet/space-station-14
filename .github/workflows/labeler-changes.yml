@@ -2,16 +2,18 @@
 
 on:
   pull_request_review:
-    types: [comment]
+    types: [submitted]
 
 jobs:
   update_label:
-    permissions:
-      contents: write
-      pull-requests: write
-    
+    if: github.event.review.state == 'changes_requested'
     runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+      contents: write
     steps:
+    - name: Debug
+      run: echo "${{ toJson(github.event) }}"
     - uses: actions-ecosystem/action-add-labels@v1
       with:
         labels: "Status: Awaiting Changes"
