@@ -1,4 +1,4 @@
-﻿using System.Linq;
+using System.Linq;
 using System.Numerics;
 using Content.Client.Administration.Managers;
 using Content.Client.ContextMenu.UI;
@@ -744,9 +744,9 @@ public sealed class MappingState : GameplayStateBase
 
     private bool HandleSaveMap(in PointerInputCmdArgs args)
     {
-//#if FULL_RELEASE
-//        return false;
-//#endif
+#if FULL_RELEASE
+        return false;
+#endif
         if (!_admin.IsAdmin(true) || !_admin.HasFlag(AdminFlags.Host))
             return false;
 
