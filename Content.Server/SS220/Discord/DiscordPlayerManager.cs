@@ -254,10 +254,6 @@ public sealed class DiscordPlayerManager : IPostInjectInit, IDisposable
         return false;
     }
 
-    private sealed record AccountLinkResponseParameters(string AccountLinkUrl);
-
-    private sealed record DiscordAuthInfoResponse(bool AccountLinked);
-
     private static JsonSerializerOptions GetJsonSerializerOptions()
     {
         var opt = new JsonSerializerOptions
@@ -395,5 +391,9 @@ public sealed class DiscordPlayerManager : IPostInjectInit, IDisposable
 
         return null;
     }
+
+    private sealed record AccountLinkResponseParameters(string AccountLinkUrl);
+
+    private sealed record DiscordAuthInfoResponse(bool AccountLinked);
 }
 
