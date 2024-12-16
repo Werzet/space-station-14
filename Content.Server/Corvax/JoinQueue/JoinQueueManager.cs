@@ -1,6 +1,7 @@
 using System.Linq;
 using Content.Server.Connection;
 using Content.Server.Corvax.DiscordAuth;
+using Content.Server.SS220.Discord;
 using Content.Shared.CCVar;
 using Content.Shared.Corvax.CCCVars;
 using Content.Shared.Corvax.JoinQueue;
@@ -41,6 +42,7 @@ public sealed class JoinQueueManager
     [Dependency] private readonly IConfigurationManager _cfg = default!;
     [Dependency] private readonly IServerNetManager _netManager = default!;
     [Dependency] private readonly DiscordAuthManager _discordAuthManager = default!;
+    [Dependency] private readonly DiscordPlayerManager _discordPlayerManager = default!;
 
     /// <summary>
     ///     Queue of active player sessions
