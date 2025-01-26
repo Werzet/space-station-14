@@ -310,13 +310,6 @@ namespace Content.Server.Database
 
         #endregion
 
-        #region Discord
-
-        Task<DiscordPlayer?> GetAccountDiscordLink(Guid playerId);
-        Task InsertDiscord(DiscordPlayer player);
-
-        #endregion
-
         #region Job Whitelists
 
         Task AddJobWhitelist(Guid player, ProtoId<JobPrototype> job);
@@ -1075,18 +1068,6 @@ namespace Content.Server.Database
                 return new SyncAsyncEnumerable<T>(enumerable);
 
             return enumerable;
-        }
-
-        public Task<DiscordPlayer?> GetAccountDiscordLink(Guid playerId)
-        {
-            DbReadOpsMetric.Inc();
-            return _db.GetAccountDiscordLink(playerId);
-        }
-
-        public Task InsertDiscord(DiscordPlayer player)
-        {
-            DbWriteOpsMetric.Inc();
-            return _db.InsertDiscord(player);
         }
 
         private (DbContextOptions<PostgresServerDbContext> options, string connectionString) CreatePostgresOptions()
