@@ -1,22 +1,22 @@
 // © SS220, An EULA/CLA with a hosting restriction, full text: https://raw.githubusercontent.com/SerbiaStrong-220/space-station-14/master/CLA.txt
 
-using System.Net.Http;
+using System.Linq;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
-using Robust.Server.ServerStatus;
-using Robust.Shared.Asynchronous;
-using Robust.Shared.Configuration;
-using Robust.Shared;
-using Robust.Shared.Console;
-using Robust.Server.Console;
-using Robust.Shared.Utility;
+using Content.Server.Administration.Managers;
+using Content.Server.GameTicking;
 using Content.Server.SS220.BackendApi;
-using Robust.Server.Player;
 using Content.Server.SS220.BackendApi.RequestModels;
 using Content.Server.SS220.BackendApi.ResponseModels;
-using Content.Server.Administration.Managers;
-using System.Linq;
-using Content.Shared.GameTicking;
+using Robust.Server.Console;
+using Robust.Server.Player;
+using Robust.Server.ServerStatus;
+using Robust.Shared;
+using Robust.Shared.Asynchronous;
+using Robust.Shared.Configuration;
+using Robust.Shared.Console;
+using Robust.Shared.Utility;
 
 namespace Content.Server.SS220.BackEndApi;
 
@@ -28,7 +28,7 @@ public sealed partial class ServerControlController : IPostInjectInit
     [Dependency] private readonly IServerConsoleHost _serverConsoleHost = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
     [Dependency] private readonly IAdminManager _adminManager = default!;
-    [Dependency] private readonly SharedGameTicker _gameTicker = default!;
+    [Dependency] private readonly IEntityManager _entityManager = default!;
 
     private string? _watchdogToken;
     private string? _watchdogKey;
@@ -226,13 +226,13 @@ public sealed partial class ServerControlController : IPostInjectInit
 
     private async Task ServerStatusHandler(IStatusHandlerContext context)
     {
-        // игроков [продолжительность раунда] количество админов
+        var ticker = _entityManager.System<GameTicker>();
 
         var status = new ServerStatusResponseModel
         {
             PlayersCount = _playerManager.PlayerCount,
             AdminCount = _adminManager.ActiveAdmins.Select(x => _adminManager.GetAdminData(x)).Count(x => x is not null && !x.Stealth),
-            RoundDuration = _gameTicker.RoundDuration()
+            RoundDuration = ticker.RoundDuration()
         };
 
         await context.RespondJsonAsync(status, HttpStatusCode.OK);
