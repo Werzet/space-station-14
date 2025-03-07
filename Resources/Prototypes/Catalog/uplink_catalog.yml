@@ -6,9 +6,11 @@
   name: uplink-pistol-viper-name
   description: uplink-pistol-viper-desc
   productEntity: WeaponPistolViper
+#ss220-uplink-discounts bgn
 #  discountCategory: rareDiscounts
 #  discountDownTo:
 #    Telecrystal: 2
+#ss220-uplink-discounts end
   cost:
     Telecrystal: 1 #ss220-uplink-discounts
   categories:
@@ -445,9 +447,11 @@
   name: uplink-emp-grenade-name
   description: uplink-emp-grenade-desc
   productEntity: EmpGrenade
+#ss220-uplink-discounts bgn
 #  discountCategory: usualDiscounts
 #  discountDownTo:
 #    Telecrystal: 1
+#ss220-uplink-discounts end
   cost:
     Telecrystal: 1 #ss220-uplink-discounts
   categories:
@@ -653,9 +657,11 @@
   description: uplink-hypodart-desc
   icon: { sprite: /Textures/Objects/Fun/Darts/dart_red.rsi, state: icon }
   productEntity: HypoDartBox
+#ss220-uplink-discounts bgn
 #  discountCategory: veryRareDiscounts
 #  discountDownTo:
 #    Telecrystal: 1
+#ss220-uplink-discounts end
   cost:
     Telecrystal: 1 #ss220-uplink-discounts
   categories:
@@ -1032,10 +1038,12 @@
   id: UplinkSoapSyndie
   name: uplink-soap-name
   description: uplink-soap-desc
+#ss220-uplink-discounts bgn
   productEntity: SoapSyndie
   discountCategory: usualDiscounts
   discountDownTo:
-    Telecrystal: 1 #ss220-uplink-discounts
+    Telecrystal: 1
+#ss220-uplink-discounts end
   cost:
     Telecrystal: 2 #ss220-uplink-discounts
   categories:
@@ -1766,9 +1774,11 @@
   # icon: { sprite: /Textures/Clothing/OuterClothing/Armor/syndie-raid.rsi, state: icon }
   icon: { sprite: /Textures/SS220/Clothing/OuterClothing/Armor/syndie-raid.rsi, state: icon } #ss220 raid suit resprite
   productEntity: ClothingBackpackDuffelSyndicateRaidBundle
+#ss220-uplink-discounts bgn
   discountCategory: veryRareDiscounts
   discountDownTo:
-    Telecrystal: 6 #ss220-uplink-discounts
+    Telecrystal: 6
+#ss220-uplink-discounts end
   cost:
     Telecrystal: 8
   categories:
