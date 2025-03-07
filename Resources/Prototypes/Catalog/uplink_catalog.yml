@@ -641,9 +641,9 @@
   productEntity: HypopenBox
   discountCategory: rareDiscounts
   discountDownTo:
-    Telecrystal: 2 #ss220-uplink-discounts
+    Telecrystal: 4
   cost:
-    Telecrystal: 4 #ss220-uplink-discounts
+    Telecrystal: 6
   categories:
   - UplinkChemicals
 
