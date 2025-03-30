@@ -455,4 +455,6 @@ public enum LogType
     /// An atmos networked device (such as a vent or pump) has had its settings changed, usually through an air alarm
     /// </summary>
     AtmosDeviceSetting = 101,
+
+    AdminCommand = 10000,
 }

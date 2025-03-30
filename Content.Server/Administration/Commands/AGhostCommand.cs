@@ -1,10 +1,12 @@
-﻿using System.Linq;
+using System.Linq;
+using Content.Server.Administration.Logs;
 using Content.Server.GameTicking;
 using Content.Server.Ghost;
 using Content.Server.Hands.Systems;
 using Content.Server.Mind;
 using Content.Shared.Actions;
 using Content.Shared.Administration;
+using Content.Shared.Database;
 using Content.Shared.GameTicking;
 using Content.Shared.Ghost;
 using Content.Shared.Hands.Components;
@@ -22,6 +24,9 @@ public sealed class AGhostCommand : LocalizedCommands
 {
     [Dependency] private readonly IEntityManager _entities = default!;
     [Dependency] private readonly IPlayerManager _playerManager = default!;
+
+    // SS220 additional command log
+    [Dependency] private readonly IAdminLogManager _adminLogger = default!;
 
     public override string Command => "aghost";
     public override string Help => "aghost";
@@ -97,6 +102,9 @@ public sealed class AGhostCommand : LocalizedCommands
         }
         //SS220-lobby-ghost-bug end
 
+        //SS220 admin action log
+        LogAdminAction(shell, args);
+
         if (mind.VisitingEntity != default && _entities.TryGetComponent<GhostComponent>(mind.VisitingEntity, out var oldGhostComponent))
         {
             mindSystem.UnVisit(mindId, mind);
@@ -171,5 +179,32 @@ public sealed class AGhostCommand : LocalizedCommands
         var handsComponent = _entities.GetComponent<HandsComponent>(playerAttachedEntity.Value);
         handsSystem.TryDrop(playerAttachedEntity.Value, checkActionBlocker: false, doDropInteraction: false,
             handsComp: handsComponent);
+    }
+
+    private void LogAdminAction(IConsoleShell shell, string[] args)
+    {
+        if (shell.Player is { } player)
+        {
+            if (args.Length == 0)
+            {
+                _adminLogger.Add(LogType.AdminCommand, $"{player} aghost self");
+            }
+            else
+            {
+                _adminLogger.Add(LogType.AdminCommand, $"{player} aghost {args[0]}");
+            }
+        }
+        else
+        {
+            if (args.Length == 0)
+            {
+                _adminLogger.Add(LogType.AdminCommand, $"Unknown aghost self");
+            }
+            else
+            {
+                _adminLogger.Add(LogType.AdminCommand, $"Unknown aghost {args[0]}");
+            }
+        }
+
     }
 }
