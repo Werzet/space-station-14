@@ -181,6 +181,7 @@ public sealed class AGhostCommand : LocalizedCommands
             handsComp: handsComponent);
     }
 
+    //SS220 admin action log start
     private void LogAdminAction(IConsoleShell shell, string[] args)
     {
         if (shell.Player is { } player)
@@ -207,4 +208,5 @@ public sealed class AGhostCommand : LocalizedCommands
         }
 
     }
+    //SS220 admin action log end
 }

@@ -456,5 +456,13 @@ public enum LogType
     /// </summary>
     AtmosDeviceSetting = 101,
 
+
+    //SS220 log types start
+
+    /// <summary>
+    /// Admin command executed.
+    /// </summary>
     AdminCommand = 10000,
+
+    //SS220 log types end
 }

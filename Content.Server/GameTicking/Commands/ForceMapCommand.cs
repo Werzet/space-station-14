@@ -68,6 +68,7 @@ namespace Content.Server.GameTicking.Commands
             return CompletionResult.Empty;
         }
 
+        //SS220 admin action log start
         private void LogAdminAction(IConsoleShell shell, string name)
         {
             if (string.IsNullOrEmpty(name))
@@ -93,5 +94,6 @@ namespace Content.Server.GameTicking.Commands
                 }
             }
         }
+        //SS220 admin action log end
     }
 }
